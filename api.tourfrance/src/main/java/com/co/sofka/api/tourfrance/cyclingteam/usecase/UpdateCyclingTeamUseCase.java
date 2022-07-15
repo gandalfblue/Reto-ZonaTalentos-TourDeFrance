@@ -5,6 +5,7 @@ import com.co.sofka.api.tourfrance.cyclingteam.mapper.CyclingTeamMapper;
 import com.co.sofka.api.tourfrance.cyclingteam.repository.CyclingTeamRepository;
 import com.co.sofka.api.tourfrance.cyclingteam.usecase.SaveTeam;
 import com.co.sofka.api.tourfrance.exceptions.ExceptionPersonalityBadRequest;
+import com.co.sofka.api.tourfrance.exceptions.ExceptionPersonalityNotFound;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
@@ -24,11 +25,14 @@ public class UpdateCyclingTeamUseCase implements SaveTeam {
     @Override
     public Mono<CyclingTeamDTO> createTeam(CyclingTeamDTO cyclingTeamDTO) {
         return cyclingTeamRepository
-                .save(cyclingTeamMapper.mapperToCyclingTeam(null).apply(cyclingTeamDTO))
+                .findById(cyclingTeamDTO.getId())
+                .map(cyclingTeamMapper.mapperToCyclingTeamDTO())
+                .switchIfEmpty(Mono.error(new ExceptionPersonalityNotFound("El equipo de cilcismo no existe")))
+                .then(cyclingTeamRepository.save(cyclingTeamMapper.mapperToCyclingTeam(cyclingTeamDTO.getId()).apply(cyclingTeamDTO)))
                 .map(cyclingTeam -> cyclingTeamMapper.mapperToCyclingTeamDTO().apply(cyclingTeam))
                 .onErrorResume(error ->
                 {
-                    return Mono.error(new ExceptionPersonalityBadRequest("Cycling team existente"));
+                    return Mono.error(new ExceptionPersonalityBadRequest("El equipo existe pero no puede usar ese codigo de equipo porque ya esta en uso"));
                 });
     }
 }

@@ -1,11 +1,15 @@
 package com.co.sofka.api.tourfrance.cyclingteam.dto;
 
 import com.co.sofka.api.tourfrance.ciclist.dto.CiclistDTO;
+import com.co.sofka.api.tourfrance.exceptions.MaxSizeConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.mongodb.core.index.Indexed;
 
+import javax.validation.Constraint;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -33,6 +37,7 @@ public class CyclingTeamDTO implements Serializable {
     @NotBlank
     private String teamLocation;
 
+    @MaxSizeConstraint
     private Set<CiclistDTO> ciclistList;
 
     public Set<CiclistDTO> getCiclistList() {

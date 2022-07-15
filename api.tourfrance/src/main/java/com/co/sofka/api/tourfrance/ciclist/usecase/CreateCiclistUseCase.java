@@ -27,7 +27,7 @@ public class CreateCiclistUseCase implements SaveCiclist{
                 .map(ciclist -> ciclistMapper.mapperToCiclistDTO().apply(ciclist))
                 .onErrorResume(error ->
                 {
-                    return Mono.error(new ExceptionPersonalityBadRequest("Parametros invalidos"));
+                    return Mono.error(new ExceptionPersonalityBadRequest("Error, el número del competidor ya existe"));
                 });
     }
 }

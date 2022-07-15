@@ -2,6 +2,7 @@ package com.co.sofka.api.tourfrance.ciclist.routes;
 
 import com.co.sofka.api.tourfrance.ciclist.dto.CiclistDTO;
 import com.co.sofka.api.tourfrance.ciclist.usecase.UpdateCiclistUseCase;
+import com.co.sofka.api.tourfrance.exceptions.ExceptionPersonalityBadRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
@@ -34,6 +35,9 @@ public class CiclistUpdateRoute {
                         .bodyValue(serverResponse));
         return route(PUT("/updateCiclist").and(accept(MediaType.APPLICATION_JSON)),
                 request -> request.bodyToMono(CiclistDTO.class)
-                        .flatMap(updateCiclist));
+                        .flatMap(updateCiclist)
+                        .onErrorResume(error -> {
+                            return Mono.error(new ExceptionPersonalityBadRequest(error.getMessage()));
+                        }));
     }
 }

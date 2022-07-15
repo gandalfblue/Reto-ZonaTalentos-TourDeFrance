@@ -11,5 +11,6 @@ public interface CyclingTeamRepository extends ReactiveMongoRepository<CyclingTe
 
     Mono<Void> deleteByCodeTeam(String codeTeam);
 
+    Mono<CyclingTeam> findByCodeTeam(String codeTeam);
     Flux<CyclingTeam> findTeamsByTeamLocation (String teamLocation);
 }

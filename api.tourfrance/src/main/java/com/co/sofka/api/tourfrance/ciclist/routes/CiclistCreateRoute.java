@@ -2,6 +2,7 @@ package com.co.sofka.api.tourfrance.ciclist.routes;
 
 import com.co.sofka.api.tourfrance.ciclist.dto.CiclistDTO;
 import com.co.sofka.api.tourfrance.ciclist.usecase.CreateCiclistUseCase;
+import com.co.sofka.api.tourfrance.exceptions.ExceptionPersonalityBadRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
@@ -27,13 +28,16 @@ public class CiclistCreateRoute {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Invalid parameters in body supplied"),
             @ApiResponse(responseCode = "404", description = "Ciclist not found")}))
-    public RouterFunction<ServerResponse> createCiclist(CreateCiclistUseCase createCiclistUseCase){
+    public RouterFunction<ServerResponse> createCiclist(CreateCiclistUseCase createCiclistUseCase) {
         Function<CiclistDTO, Mono<ServerResponse>> createCiclist = CiclistDTO -> createCiclistUseCase.createCiclist(CiclistDTO)
                 .flatMap(serverResponse -> ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(serverResponse));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(serverResponse));
         return route(POST("/createCiclist").and(accept(MediaType.APPLICATION_JSON)),
                 request -> request.bodyToMono(CiclistDTO.class)
-                        .flatMap(createCiclist));
+                        .flatMap(createCiclist)
+                        .onErrorResume(error -> {
+                            return Mono.error(new ExceptionPersonalityBadRequest(error.getMessage()));
+                        }));
     }
 }

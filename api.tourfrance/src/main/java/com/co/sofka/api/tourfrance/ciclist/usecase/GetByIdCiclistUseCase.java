@@ -6,28 +6,28 @@ import com.co.sofka.api.tourfrance.ciclist.repository.CiclistRepository;
 import com.co.sofka.api.tourfrance.exceptions.ExceptionPersonalityNotFound;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
 
 @Service
 @Validated
-public class ListCiclistByNacionalityUseCase implements Function<String, Flux<CiclistDTO>> {
+public class GetByIdCiclistUseCase implements Function<String, Mono<CiclistDTO>> {
 
-    private final CiclistRepository ciclistRepository;
-    private final CiclistMapper ciclistMapper;
+private final CiclistRepository ciclistRepository;
+private final CiclistMapper ciclistMapper;
 
-    public ListCiclistByNacionalityUseCase(CiclistRepository ciclistRepository, CiclistMapper ciclistMapper) {
+    public GetByIdCiclistUseCase(CiclistRepository ciclistRepository, CiclistMapper ciclistMapper) {
         this.ciclistRepository = ciclistRepository;
         this.ciclistMapper = ciclistMapper;
     }
 
     @Override
-    public Flux<CiclistDTO> apply(String nacionality) {
+    public Mono<CiclistDTO> apply(String id) {
         return ciclistRepository
-                .findCiclistsByNacionality(nacionality)
-                .switchIfEmpty(Mono.error(new ExceptionPersonalityNotFound("No existe ningun ciclista con esa nacionalidad")))
-                .map(ciclistMapper.mapperToCiclistDTO());
+                .findById(id)
+                .map(ciclistMapper.mapperToCiclistDTO())
+                .switchIfEmpty(Mono.error(new ExceptionPersonalityNotFound("El ciclista no existe")));
+
     }
 }

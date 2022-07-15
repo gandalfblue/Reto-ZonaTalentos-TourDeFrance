@@ -14,4 +14,5 @@ public interface CiclistRepository extends ReactiveMongoRepository<Ciclist, Stri
     Flux<Ciclist> findCiclistsByCodeTeam(String codeTeam);
     Flux<Ciclist> findCiclistsByNacionality(String nacionality);
 
+    Mono<Ciclist> findCiclistByNumberCompetitor (String numberCompetitor);
 }
