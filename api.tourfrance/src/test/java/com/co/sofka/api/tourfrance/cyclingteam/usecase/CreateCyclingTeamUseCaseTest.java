@@ -7,18 +7,16 @@ import com.co.sofka.api.tourfrance.cyclingteam.repository.CyclingTeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.mock;
-import static reactor.core.publisher.Mono.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class CreateCyclingTeamUseCaseTest {
 
     @Autowired
